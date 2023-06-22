@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @SpringBootTest
-class JavaUserServiceTest @Autowired constructor(
+class UserServiceTest @Autowired constructor(
     private val userRepository: UserRepository,
     private val userService: UserService
 ){

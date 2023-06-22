@@ -1,6 +1,7 @@
 package com.group.libraryapp.service.book
 
 import com.group.libraryapp.domain.book.BookRepository
+import com.group.libraryapp.domain.user.UserRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
 import com.group.libraryapp.dto.book.request.BookLoanRequest
 import com.group.libraryapp.dto.book.request.BookRequest
@@ -8,6 +9,7 @@ import com.group.libraryapp.dto.book.request.BookReturnRequest
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.service.user.UserService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,12 +20,13 @@ import org.springframework.transaction.annotation.Transactional
 import kotlin.IllegalArgumentException
 
 @SpringBootTest
-@Transactional
-class JavaBookServiceTest @Autowired constructor(
+//@Transactional
+class BookServiceTest @Autowired constructor(
     private val bookRepository: BookRepository,
     private val bookService: BookService,
     private val userService: UserService,
     private val userLoanHistoryRepository: UserLoanHistoryRepository,
+    private val userRepository: UserRepository,
 ) {
 
     val userName = "shein"
@@ -32,6 +35,13 @@ class JavaBookServiceTest @Autowired constructor(
     fun init() {
         val requestUser = UserCreateRequest(userName, 100)
         userService.saveUser(requestUser)
+    }
+
+    @AfterEach
+    fun clear() {
+        userLoanHistoryRepository.deleteAll()
+        userRepository.deleteAll()
+        bookRepository.deleteAll()
     }
 
     @Test
@@ -62,9 +72,9 @@ class JavaBookServiceTest @Autowired constructor(
         bookService.loanBook(bookLoanRequest)
 
         //then
-//        val userLoanHistory = userLoanHistoryRepository.findByBookNameAndIsReturn(bookName, false)
-//        assertThat(userLoanHistory.bookName).isEqualTo(bookName)
-//        assertThat(userLoanHistory.isReturn).isFalse
+        val userLoanHistory = userLoanHistoryRepository.findByBookNameAndIsReturn(bookName, false)
+        assertThat(userLoanHistory.bookName).isEqualTo(bookName)
+        assertThat(userLoanHistory.isReturn).isFalse
     }
 
     @Test
