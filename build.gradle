@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.7.10'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.6.21'
 }
 
 group = 'com.group'
@@ -17,10 +18,17 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.jetbrains.kotlin:kotlin-lombok'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.8.10'
 
     // kotlin
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
+    //test lombok
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
