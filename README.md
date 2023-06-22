@@ -24,3 +24,8 @@
     }
   ```
   
+* all-open 플러그인 추가 
+  ```gradle
+      id 'org.jetbrains.kotlin.plugin.spring' version '1.7.10'
+  ```
+  
