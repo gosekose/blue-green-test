@@ -9,15 +9,9 @@ import com.group.libraryapp.dto.book.request.BookReturnRequest
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.service.user.UserService
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
-import kotlin.IllegalArgumentException
 
 @SpringBootTest
 //@Transactional
@@ -55,8 +49,8 @@ class BookServiceTest @Autowired constructor(
         bookService.saveBook(request)
 
         //then
-        val result = bookRepository.findByName(bookName).orElseThrow()
-        assertThat(result.name).isEqualTo(bookName)
+        val result = bookRepository.findByName(bookName)
+        assertThat(result!!.name).isEqualTo(bookName)
     }
 
     @Test
@@ -73,7 +67,7 @@ class BookServiceTest @Autowired constructor(
 
         //then
         val userLoanHistory = userLoanHistoryRepository.findByBookNameAndIsReturn(bookName, false)
-        assertThat(userLoanHistory.bookName).isEqualTo(bookName)
+        assertThat(userLoanHistory!!.bookName).isEqualTo(bookName)
         assertThat(userLoanHistory.isReturn).isFalse
     }
 
@@ -128,7 +122,7 @@ class BookServiceTest @Autowired constructor(
 
         //then
         val userLoanHistory = userLoanHistoryRepository.findByBookNameAndIsReturn(bookName, true)
-        assertThat(userLoanHistory.isReturn).isTrue
+        assertThat(userLoanHistory!!.isReturn).isTrue
         assertThat(userLoanHistory.bookName).isEqualTo(bookName)
     }
 

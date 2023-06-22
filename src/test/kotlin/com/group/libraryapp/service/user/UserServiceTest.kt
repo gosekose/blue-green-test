@@ -29,8 +29,7 @@ class UserServiceTest @Autowired constructor(
 
         //then
         val result = userRepository.findByName(name)
-            .orElseThrow()
-        assertThat(result.name).isEqualTo(name)
+        assertThat(result!!.name).isEqualTo(name)
         assertThat(result.age).isNull()
     }
 
@@ -45,7 +44,7 @@ class UserServiceTest @Autowired constructor(
         ))
 
         //when
-        val results = userService.users
+        val results = userService.getUsers()
 
         //then
         assertThat(results).hasSize(3)
@@ -64,8 +63,8 @@ class UserServiceTest @Autowired constructor(
         userService.updateUserName(request)
 
         //then
-        val result = userRepository.findByName(request.name).orElseThrow()
-        assertThat(result.name).isEqualTo("B")
+        val result = userRepository.findByName(request.name)
+        assertThat(result!!.name).isEqualTo("B")
     }
 
     @Test
@@ -79,6 +78,6 @@ class UserServiceTest @Autowired constructor(
         userService.deleteUser(name)
 
         //then
-        assertThat(userRepository.findByName(name)).isEmpty
+        assertThat(userRepository.findByName(name)).isNull()
     }
 }
