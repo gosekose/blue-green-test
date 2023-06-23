@@ -1,13 +1,17 @@
 package com.group.libraryapp.service.book
 
+import com.group.libraryapp.domain.book.Book
 import com.group.libraryapp.domain.book.BookRepository
 import com.group.libraryapp.domain.book.BookType
+import com.group.libraryapp.domain.user.User
 import com.group.libraryapp.domain.user.UserRepository
+import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanStatus
 import com.group.libraryapp.dto.book.request.BookLoanRequest
 import com.group.libraryapp.dto.book.request.BookRequest
 import com.group.libraryapp.dto.book.request.BookReturnRequest
+import com.group.libraryapp.dto.book.response.BookStatResponse
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.service.user.UserService
 import org.assertj.core.api.Assertions.assertThat
@@ -149,5 +153,48 @@ class BookServiceTest @Autowired constructor(
         assertThrows<IllegalArgumentException> {
             bookService.returnBook(BookReturnRequest("other", bookName))
         }
+    }
+    
+    @Test
+    @DisplayName("책 대여 권수를 정상 확인한다")
+    fun countLoanedBook() {
+        //given
+        val user = userRepository.save(User("A", null))
+
+        userLoanHistoryRepository.saveAll(listOf(
+            UserLoanHistory.fixture(user, "object1", UserLoanStatus.LOANED),
+            UserLoanHistory.fixture(user, "object2", UserLoanStatus.LOANED),
+            UserLoanHistory.fixture(user, "object3", UserLoanStatus.RETURNED),
+        ))
+
+        //when
+        val count = bookService.countLoanedBook()
+
+        //then
+        assertThat(count).isEqualTo(2)
+    }
+
+    @Test
+    @DisplayName("분야별 책 권수를 항상 확인한다")
+    fun getBookStatisticsTest() {
+        //given
+        bookRepository.saveAll(listOf(
+            Book.fixture("A", BookType.COMPUTER),
+            Book.fixture("B", BookType.COMPUTER),
+            Book.fixture("C", BookType.SCIENCE),
+            Book.fixture("D", BookType.COMPUTER),
+        ))
+
+        //when
+        val results = bookService.getBookStatistic()
+
+        //then
+        assertThat(results).hasSize(2)
+        assertCount(results, BookType.COMPUTER, 3)
+        assertCount(results, BookType.SCIENCE, 1)
+    }
+
+    private fun assertCount(results: List<BookStatResponse>, type: BookType, count: Int) {
+        assertThat(results.first { result -> result.type == type }.count).isEqualTo(count)
     }
 }
