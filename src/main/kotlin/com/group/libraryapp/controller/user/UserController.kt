@@ -3,6 +3,7 @@ package com.group.libraryapp.controller.user
 import com.group.libraryapp.dto.common.CommonResponse
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.dto.user.request.UserUpdateRequest
+import com.group.libraryapp.dto.user.response.UserLoanHistoryResponse
 import com.group.libraryapp.dto.user.response.UserResponse
 import com.group.libraryapp.service.user.UserService
 import org.springframework.http.ResponseEntity
@@ -41,6 +42,11 @@ class UserController (
     fun deleteUser(@RequestParam name: String): ResponseEntity<CommonResponse<String>> {
         userService.deleteUser(name)
         return ResponseEntity.ok().body(CommonResponse())
+    }
+
+    @GetMapping("/user/loan")
+    fun getUserLoanHistories(): List<UserLoanHistoryResponse> {
+        return userService.getUserLoanHistories()
     }
 
 }

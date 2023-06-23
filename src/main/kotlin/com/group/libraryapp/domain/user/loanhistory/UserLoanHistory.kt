@@ -17,6 +17,9 @@ class UserLoanHistory (
     val id: Long? = null
 ) {
 
+    val isReturn: Boolean
+        get() = this.loanStatus == UserLoanStatus.RETURNED
+
     companion object {
         fun fixture(
             user: User,
