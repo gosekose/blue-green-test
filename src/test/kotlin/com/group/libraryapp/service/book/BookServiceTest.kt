@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-//@Transactional
 class BookServiceTest @Autowired constructor(
     private val bookRepository: BookRepository,
     private val bookService: BookService,
