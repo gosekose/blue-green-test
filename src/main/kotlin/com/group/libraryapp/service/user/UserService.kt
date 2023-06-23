@@ -5,10 +5,8 @@ import com.group.libraryapp.domain.user.UserRepository
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.dto.user.request.UserUpdateRequest
 import com.group.libraryapp.dto.user.response.UserResponse
-import com.group.libraryapp.utils.fail
 import com.group.libraryapp.utils.findByIdOrThrow
 import com.group.libraryapp.utils.findByNameThrow
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,7 +23,7 @@ class UserService (
     @Transactional(readOnly = true)
     fun getUsers(): List<UserResponse> {
         return userRepository.findAll()
-            .map { user -> UserResponse(user) }
+            .map { user -> UserResponse.of(user) }
     }
 
     fun updateUserName(request: UserUpdateRequest) {

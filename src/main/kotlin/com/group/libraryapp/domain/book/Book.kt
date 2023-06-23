@@ -8,6 +8,9 @@ class Book constructor(
     @Column(nullable = false)
     val name: String,
 
+    @Enumerated(value = EnumType.STRING)
+    val type: BookType,
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
     val id: Long? = null,
@@ -15,6 +18,20 @@ class Book constructor(
     init {
         if (name.isBlank()) {
             throw IllegalArgumentException("이름은 비어 있을 수 없습니다.")
+        }
+    }
+
+    companion object {
+        fun fixture (
+            name: String = "책 이름",
+            type: BookType = BookType.COMPUTER,
+            id: Long? = null,
+        ): Book {
+            return Book (
+                name = name,
+                type = type,
+                id = id
+            )
         }
     }
 }

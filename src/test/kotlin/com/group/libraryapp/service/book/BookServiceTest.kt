@@ -1,8 +1,10 @@
 package com.group.libraryapp.service.book
 
 import com.group.libraryapp.domain.book.BookRepository
+import com.group.libraryapp.domain.book.BookType
 import com.group.libraryapp.domain.user.UserRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
+import com.group.libraryapp.domain.user.loanhistory.UserLoanStatus
 import com.group.libraryapp.dto.book.request.BookLoanRequest
 import com.group.libraryapp.dto.book.request.BookRequest
 import com.group.libraryapp.dto.book.request.BookReturnRequest
@@ -43,7 +45,8 @@ class BookServiceTest @Autowired constructor(
     fun saveBookTest() {
         //given
         val bookName = "object"
-        val request = BookRequest(bookName)
+        val type = BookType.COMPUTER
+        val request = BookRequest(bookName, type)
 
         //when
         bookService.saveBook(request)
@@ -58,7 +61,8 @@ class BookServiceTest @Autowired constructor(
     fun loanBookTest() {
         //given
         val bookName = "object"
-        val bookSaveRequest = BookRequest(bookName)
+        val type = BookType.COMPUTER
+        val bookSaveRequest = BookRequest(bookName, type)
         val bookLoanRequest = BookLoanRequest(userName, bookName)
 
         //when
@@ -66,9 +70,9 @@ class BookServiceTest @Autowired constructor(
         bookService.loanBook(bookLoanRequest)
 
         //then
-        val userLoanHistory = userLoanHistoryRepository.findByBookNameAndIsReturn(bookName, false)
+        val userLoanHistory = userLoanHistoryRepository.findByBookNameAndLoanStatus(bookName, UserLoanStatus.LOANED)
         assertThat(userLoanHistory!!.bookName).isEqualTo(bookName)
-        assertThat(userLoanHistory.isReturn).isFalse
+        assertThat(userLoanHistory.loanStatus).isEqualTo(UserLoanStatus.LOANED)
     }
 
     @Test
@@ -76,7 +80,8 @@ class BookServiceTest @Autowired constructor(
     fun loanBook_Exception_Already_Load() {
         //given
         val bookName = "object"
-        val bookSaveRequest = BookRequest(bookName)
+        val type = BookType.COMPUTER
+        val bookSaveRequest = BookRequest(bookName, type)
         bookService.saveBook(bookSaveRequest)
 
         //when & then
@@ -95,7 +100,8 @@ class BookServiceTest @Autowired constructor(
     fun loanBook_Exception_NotFound_User() {
         //given
         val bookName = "object"
-        val bookSaveRequest = BookRequest(bookName)
+        val type = BookType.COMPUTER
+        val bookSaveRequest = BookRequest(bookName, type)
         bookService.saveBook(bookSaveRequest)
 
         //when & then
@@ -111,7 +117,8 @@ class BookServiceTest @Autowired constructor(
     fun returnTest() {
         //given
         val bookName = "object"
-        val bookSaveRequest = BookRequest(bookName)
+        val type = BookType.COMPUTER
+        val bookSaveRequest = BookRequest(bookName, type)
         bookService.saveBook(bookSaveRequest)
 
         val bookLoanRequest = BookLoanRequest(userName, bookName)
@@ -121,8 +128,8 @@ class BookServiceTest @Autowired constructor(
         bookService.returnBook(BookReturnRequest(userName, bookName))
 
         //then
-        val userLoanHistory = userLoanHistoryRepository.findByBookNameAndIsReturn(bookName, true)
-        assertThat(userLoanHistory!!.isReturn).isTrue
+        val userLoanHistory = userLoanHistoryRepository.findByBookNameAndLoanStatus(bookName, UserLoanStatus.RETURNED)
+        assertThat(userLoanHistory!!.loanStatus).isEqualTo(UserLoanStatus.RETURNED)
         assertThat(userLoanHistory.bookName).isEqualTo(bookName)
     }
 
@@ -131,7 +138,8 @@ class BookServiceTest @Autowired constructor(
     fun return_Exception_NotFound_User() {
         //given
         val bookName = "object"
-        val bookSaveRequest = BookRequest(bookName)
+        val type = BookType.COMPUTER
+        val bookSaveRequest = BookRequest(bookName, type)
         bookService.saveBook(bookSaveRequest)
 
         val bookLoanRequest = BookLoanRequest(userName, bookName)
